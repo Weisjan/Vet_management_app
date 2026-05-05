@@ -1,0 +1,9 @@
+Alembic migration files live here.
+
+Create a revision from the backend directory:
+
+    alembic revision --autogenerate -m "create initial tables"
+
+Apply migrations:
+
+    alembic upgrade head
