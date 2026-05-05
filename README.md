@@ -1,4 +1,4 @@
-# Vet Reputation AI
+# VetShield AI
 
 Production-oriented MVP foundation for a veterinary reputation monitoring SaaS.
 
@@ -222,3 +222,9 @@ This project follows the MVP guidance from `AGENTS.md`:
 - modular architecture
 - human approval required for sensitive actions
 - compliance-conscious defaults
+
+## License
+
+This project is proprietary software. All rights reserved.
+
+The source code may not be copied, modified, distributed, or used without prior written permission from the copyright holder.
