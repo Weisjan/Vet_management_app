@@ -168,6 +168,11 @@ Mentions:
 - `PATCH /api/v1/mentions/{mention_id}`
 - `DELETE /api/v1/mentions/{mention_id}`
 
+AI analysis and alerts:
+
+- `GET /api/v1/mentions/{mention_id}/ai-analysis`
+- `GET /api/v1/clinics/{clinic_id}/alerts`
+
 Authentication is not implemented yet. Routers already include a placeholder dependency where auth/tenant checks can be added.
 
 ## Database Migrations
