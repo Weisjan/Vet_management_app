@@ -6,6 +6,8 @@ This repository currently contains the backend foundation only:
 
 - FastAPI application
 - PostgreSQL-ready SQLAlchemy setup
+- SQLAlchemy MVP domain models
+- Alembic migration setup
 - Redis + RQ worker setup
 - Mock AI provider
 - Mock email provider
@@ -41,13 +43,19 @@ cp .env.example .env
 docker compose up --build
 ```
 
-3. Open the API health check:
+3. Run database migrations:
+
+```bash
+docker compose exec api alembic upgrade head
+```
+
+4. Open the API health check:
 
 ```text
 http://localhost:8000/health
 ```
 
-4. Open the generated API docs:
+5. Open the generated API docs:
 
 ```text
 http://localhost:8000/docs
@@ -89,6 +97,8 @@ backend/
       routes/
     core/
     db/
+      models/
+      migrations/
     integrations/
       ai/
       email/
@@ -108,6 +118,8 @@ Implemented:
 - application bootstrap
 - settings management
 - database engine/session setup
+- MVP SQLAlchemy models
+- initial Alembic migration
 - Redis/RQ connection setup
 - mock AI provider
 - mock email provider
@@ -129,6 +141,68 @@ Intentionally not implemented yet:
 - `GET /health/live`: confirms the API process is running
 - `GET /health/ready`: checks PostgreSQL and Redis connectivity
 - `GET /health`: combined health summary
+
+## MVP API Endpoints
+
+Clinics:
+
+- `GET /api/v1/clinics`
+- `POST /api/v1/clinics`
+- `GET /api/v1/clinics/{clinic_id}`
+- `PATCH /api/v1/clinics/{clinic_id}`
+- `DELETE /api/v1/clinics/{clinic_id}`
+
+Keywords:
+
+- `GET /api/v1/clinics/{clinic_id}/keywords`
+- `POST /api/v1/clinics/{clinic_id}/keywords`
+- `GET /api/v1/keywords/{keyword_id}`
+- `PATCH /api/v1/keywords/{keyword_id}`
+- `DELETE /api/v1/keywords/{keyword_id}`
+
+Mentions:
+
+- `GET /api/v1/clinics/{clinic_id}/mentions`
+- `POST /api/v1/clinics/{clinic_id}/mentions`
+- `GET /api/v1/mentions/{mention_id}`
+- `PATCH /api/v1/mentions/{mention_id}`
+- `DELETE /api/v1/mentions/{mention_id}`
+
+Authentication is not implemented yet. Routers already include a placeholder dependency where auth/tenant checks can be added.
+
+## Database Migrations
+
+Run migrations from Docker:
+
+```bash
+docker compose exec api alembic upgrade head
+```
+
+Create a future migration after changing models:
+
+```bash
+docker compose exec api alembic revision --autogenerate -m "describe change"
+```
+
+Run migrations locally without Docker from the `backend` directory:
+
+```bash
+alembic upgrade head
+```
+
+## Tests
+
+Run tests with Docker:
+
+```bash
+docker compose exec api python -m pytest
+```
+
+Or locally from the repository root:
+
+```bash
+python -m pytest backend/tests
+```
 
 ## Development Notes
 
