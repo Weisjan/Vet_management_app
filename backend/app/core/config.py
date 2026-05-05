@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     app_env: str = "local"
     debug: bool = False
     api_v1_prefix: str = "/api/v1"
+    secret_key: str = "change-me-in-production"
+    access_token_expire_minutes: int = 60
 
     database_url: str = Field(
         default="postgresql+psycopg://vet_reputation:vet_reputation@localhost:5432/vet_reputation"

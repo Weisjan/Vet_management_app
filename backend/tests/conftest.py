@@ -34,8 +34,7 @@ def db_session() -> Session:
         Base.metadata.drop_all(bind=engine)
 
 
-@pytest.fixture()
-def client(db_session: Session) -> TestClient:
+def _install_dependency_overrides(db_session: Session) -> list[tuple[object, tuple[object, ...], dict[str, object]]]:
     enqueued_jobs: list[tuple[object, tuple[object, ...], dict[str, object]]] = []
 
     class FakeQueue:
@@ -53,9 +52,30 @@ def client(db_session: Session) -> TestClient:
 
     app.dependency_overrides[get_db] = override_get_db
     app.dependency_overrides[get_background_queue] = override_get_background_queue
+    return enqueued_jobs
+
+
+@pytest.fixture()
+def anonymous_client(db_session: Session) -> TestClient:
+    enqueued_jobs = _install_dependency_overrides(db_session)
     try:
         test_client = TestClient(app)
         test_client.enqueued_jobs = enqueued_jobs  # type: ignore[attr-defined]
         yield test_client
     finally:
         app.dependency_overrides.clear()
+
+
+@pytest.fixture()
+def client(anonymous_client: TestClient) -> TestClient:
+    response = anonymous_client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "owner@example.test",
+            "password": "secure-password",
+            "full_name": "Clinic Owner",
+        },
+    )
+    token = response.json()["access_token"]
+    anonymous_client.headers.update({"Authorization": f"Bearer {token}"})
+    return anonymous_client

@@ -124,14 +124,11 @@ Implemented:
 - mock AI provider
 - mock email provider
 - health endpoints
+- JWT authentication and clinic membership authorization
+- clinic, keyword, mention, AI analysis, and alert MVP endpoints
 
 Intentionally not implemented yet:
 
-- authentication
-- clinic accounts
-- keyword management
-- mentions
-- alert business logic
 - review request workflows
 - real external integrations
 - billing
@@ -143,6 +140,12 @@ Intentionally not implemented yet:
 - `GET /health`: combined health summary
 
 ## MVP API Endpoints
+
+Auth:
+
+- `POST /api/v1/auth/register`
+- `POST /api/v1/auth/login`
+- `GET /api/v1/auth/me`
 
 Clinics:
 
@@ -173,7 +176,7 @@ AI analysis and alerts:
 - `GET /api/v1/mentions/{mention_id}/ai-analysis`
 - `GET /api/v1/clinics/{clinic_id}/alerts`
 
-Authentication is not implemented yet. Routers already include a placeholder dependency where auth/tenant checks can be added.
+All MVP business endpoints require a bearer token. Users can only access clinics where they have a `clinic_members` row; creating a clinic automatically creates an owner membership for the current user.
 
 ## Database Migrations
 
